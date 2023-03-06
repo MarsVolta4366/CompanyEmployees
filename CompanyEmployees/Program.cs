@@ -38,7 +38,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 });
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -46,5 +45,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// Page 27, can't get logging to file to work.
