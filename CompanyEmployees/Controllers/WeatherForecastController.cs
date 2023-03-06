@@ -1,4 +1,5 @@
 using Contracts;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -20,13 +21,8 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecast> Get1()
         {
-            _logger.LogInfo("Here is an info message.");
-            _logger.LogDebug("Here is a debug message.");
-            _logger.LogWarn("Here is a warning message.");
-            _logger.LogError("Here is an error message.");
-
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
