@@ -1,4 +1,6 @@
 ﻿using Contracts;
+using Entities.Dtos;
+using Entities.Extensions;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +26,9 @@ namespace CompanyEmployees.Controllers
             try
             {
                 var companies = _repository.Company.GetAllCompanies(trackChanges: false);
-                return Ok(companies);
+                var companyDtos = companies.Select(c => c.ConvertToDto()).ToList();
+
+                return Ok(companyDtos);
             }
             catch (Exception ex)
             {
