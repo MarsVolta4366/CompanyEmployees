@@ -29,11 +29,17 @@ namespace CompanyEmployees.Controllers
             return Ok(companyDtos);
         }
 
-        [HttpGet("company-name")]
-        public IActionResult GetCompaniesByCondition(string companyName)
+        [HttpGet("{id}")]
+        public IActionResult GetCompany(Guid id)
         {
-            Company? company = _repository.Company.GetCompanyByName(companyName, false);
-            return Ok(company);
+            Company? company = _repository.Company.GetCompany(id, false);
+
+            if (company is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(company.ConvertToDto());
         }
     }
 }
