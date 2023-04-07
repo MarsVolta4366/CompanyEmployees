@@ -32,7 +32,7 @@ namespace CompanyEmployees.Controllers
 
             var employees = _repository.Employee.GetEmployees(companyId, trackChanges: false);
 
-            var employeeDtos = employees.Select(e => e.ConvertToDto<EmployeeDto>());
+            var employeeDtos = employees.Select(e => e.ConvertToType<EmployeeDto>());
 
             return Ok(employeeDtos);
         }

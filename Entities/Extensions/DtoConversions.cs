@@ -14,8 +14,14 @@ namespace Entities.Extensions
                 FullAddress = string.Join(' ', company.Address, company.Country)
             };
 
-        // Allows dynamic converting from one type to another as long as property names are exactly the same.
-        public static T ConvertToDto<T>(this object convertFrom) where T : new()
+        /// <summary>
+        /// Extension method that dynamically converts from type of this to type T.
+        /// Property names must be the same in order to map values, types don't have to share all properties though.
+        /// </summary>
+        /// <typeparam name="T">The type to convert the object to.</typeparam>
+        /// <param name="convertFrom">The object to be converted.</param>
+        /// <returns>An instance of type T with mapped property values.</returns>
+        public static T ConvertToType<T>(this object convertFrom) where T : new()
         {
             T convertTo = new();
 
