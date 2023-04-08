@@ -1,8 +1,6 @@
 ﻿using Contracts;
 using Entities.Dtos;
 using Entities.Extensions;
-using Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -32,9 +30,7 @@ namespace CompanyEmployees.Controllers
 
             var employees = _repository.Employee.GetEmployees(companyId, trackChanges: false);
 
-            var employeeDtos = employees.Select(e => e.ConvertToType<EmployeeDto>());
-
-            return Ok(employeeDtos);
+            return Ok(employees.MapIEnumerable<EmployeeDto>());
         }
     }
 }
