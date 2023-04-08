@@ -32,5 +32,25 @@ namespace CompanyEmployees.Controllers
 
             return Ok(employees.MapIEnumerable<EmployeeDto>());
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetEmployeeForCompany(Guid companyId, Guid id)
+        {
+            var company = _repository.Company.GetCompany(companyId, trackChanges: false);
+
+            if (company is null)
+            {
+                return NotFound();
+            }
+
+            var employee = _repository.Employee.GetEmployee(companyId, id, trackChanges: false);
+
+            if (employee is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(employee.Map<EmployeeDto>());
+        }
     }
 }
