@@ -1,6 +1,7 @@
 ﻿using Entities.Dtos;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 
 namespace CompanyEmployees
@@ -14,37 +15,38 @@ namespace CompanyEmployees
             SupportedEncodings.Add(Encoding.Unicode);
         }
 
-        protected override bool CanWriteType(Type type)
-        {
-            if (typeof(CompanyDto).IsAssignableFrom(type) || typeof(IEnumerable<CompanyDto>).IsAssignableFrom(type))
-            {
-                return base.CanWriteType(type);
-            }
-            return false;
-        }
-
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
             var response = context.HttpContext.Response;
             var buffer = new StringBuilder();
 
-            if (context.Object is IEnumerable<CompanyDto> enumerable)
+            if (context.Object is IEnumerable<object> enumerable)
             {
-                foreach (var company in enumerable)
+                foreach (var item in enumerable)
                 {
-                    FormatCsv(buffer, company);
+                    FormatCsv(buffer, item);
                 }
-            }
-            else
-            {
-                FormatCsv(buffer, (CompanyDto)context.Object);
             }
             await response.WriteAsync(buffer.ToString());
         }
 
-        private static void FormatCsv(StringBuilder buffer, CompanyDto company)
+        private static void FormatCsv(StringBuilder buffer, object item)
         {
-            buffer.AppendLine($"{company.Id},\"{company.Name}\",\"{company.FullAddress}\"");
+            string result = "";
+
+            for (int i = 0; i < item.GetType().GetProperties().Length; i++)
+            {
+                PropertyInfo propertyInfo = item.GetType().GetProperties()[i];
+                var value = propertyInfo.GetValue(item);
+                result += $"{value}";
+
+                // Only append a comma if this is not the last value in this row.
+                if (i != item.GetType().GetProperties().Length - 1)
+                {
+                    result += ",";
+                }
+            }
+            buffer.AppendLine(result);
         }
     }
 }
