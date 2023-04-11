@@ -27,6 +27,10 @@ namespace CompanyEmployees
                     FormatCsv(buffer, item);
                 }
             }
+            else if (context.Object is not null)
+            {
+                FormatCsv(buffer, context.Object);
+            }
             await response.WriteAsync(buffer.ToString());
         }
 
