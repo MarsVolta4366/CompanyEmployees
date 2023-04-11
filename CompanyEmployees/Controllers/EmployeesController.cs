@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Dtos;
 using Entities.Extensions;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -51,6 +52,31 @@ namespace CompanyEmployees.Controllers
             }
 
             return Ok(employee.Map<EmployeeDto>());
+        }
+
+        [HttpPost]
+        public IActionResult CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employeeDto)
+        {
+            if (employeeDto is null)
+            {
+                return BadRequest("EmployeeForCreationDto object is null.");
+            }
+
+            var company = _repository.Company.GetCompany(companyId, trackChanges: false);
+
+            if (company is null)
+            {
+                return NotFound($"No company exists with id: {companyId}");
+            }
+
+            Employee employeeEntity = employeeDto.Map<Employee>();
+
+            _repository.Employee.CreateEmployeeForCompany(companyId, employeeEntity);
+            _repository.Save();
+
+            EmployeeDto employeeToReturn = employeeEntity.Map<EmployeeDto>();
+
+            return CreatedAtAction(nameof(GetEmployeeForCompany), new { companyId, id = employeeToReturn.Id }, employeeToReturn);
         }
     }
 }
