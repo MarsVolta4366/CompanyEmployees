@@ -29,7 +29,7 @@ namespace CompanyEmployees.Controllers
             return Ok(companyDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "CompanyById")]
         public IActionResult GetCompany(Guid id)
         {
             Company? company = _repository.Company.GetCompany(id, false);
@@ -40,6 +40,24 @@ namespace CompanyEmployees.Controllers
             }
 
             return Ok(company.ConvertToDto());
+        }
+
+        [HttpPost]
+        public IActionResult CreateCompany([FromBody] CompanyForCreationDto companyDto)
+        {
+            if (companyDto is null)
+            {
+                return BadRequest("CompanyForCreationDto object is null");
+            }
+
+            Company companyEntity = companyDto.Map<Company>();
+
+            _repository.Company.CreateCompany(companyEntity);
+            _repository.Save();
+
+            CompanyDto companyToReturn = companyEntity.ConvertToDto();
+
+            return CreatedAtAction(nameof(GetCompany), new { id = companyToReturn.Id }, companyToReturn);
         }
     }
 }
