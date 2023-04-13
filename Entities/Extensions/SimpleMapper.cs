@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Entities.Models;
+using System.Reflection;
 
 namespace Entities.Extensions
 {
@@ -33,7 +34,17 @@ namespace Entities.Extensions
 
                 var propToSet = convertTo.GetType().GetProperty(propertyInfo.Name);
 
-                if (propToSet is not null)
+                if (typeof(IEnumerable<object>).IsAssignableFrom(property?.PropertyType))
+                {
+                    throw new Exception("Simple Mapper can't handle this yet.");
+                    //IEnumerable<object>? items = value as IEnumerable<object>;
+                    //if (items is not null)
+                    //{
+
+                    //}
+
+                }
+                else if (propToSet is not null)
                 {
                     propToSet.SetValue(convertTo, value);
                 }

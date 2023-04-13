@@ -50,7 +50,7 @@ namespace CompanyEmployees.Controllers
                 return BadRequest("CompanyForCreationDto object is null");
             }
 
-            Company companyEntity = companyDto.Map<Company>();
+            Company companyEntity = companyDto.ConvertToCompany();
 
             _repository.Company.CreateCompany(companyEntity);
             _repository.Save();
