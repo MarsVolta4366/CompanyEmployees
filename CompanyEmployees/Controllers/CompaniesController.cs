@@ -2,7 +2,6 @@
 using Entities.Dtos;
 using Entities.Extensions;
 using Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees.Controllers
@@ -58,6 +57,23 @@ namespace CompanyEmployees.Controllers
             CompanyDto companyToReturn = companyEntity.ConvertToDto();
 
             return CreatedAtAction(nameof(GetCompany), new { id = companyToReturn.Id }, companyToReturn);
+        }
+
+        [HttpGet("collection/({ids})", Name = "CompanyCollection")]
+        public IActionResult GetCompanyCollection(string ids)
+        {
+            string[] idList = ids.Split(",");
+            IEnumerable<Guid> guids = idList.Select(x => Guid.ParseExact(x, "D"));
+
+            IEnumerable<Company> companyEntities = _repository.Company.GetByIds(guids, trackChanges: false);
+
+            if (guids.Count() != companyEntities.Count())
+            {
+                return NotFound("One or more of the company ids provided were invalid.");
+            }
+
+            IEnumerable<CompanyDto> companiesResult = companyEntities.Select(company => company.ConvertToDto());
+            return Ok(companiesResult);
         }
     }
 }
